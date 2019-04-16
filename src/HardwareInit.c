@@ -7,51 +7,50 @@
 #include <Delay_RIT.h>
 #include <lpc17xx_uart.h>
 
-//
-//void ADC_IRQHandler(void);
-//
-//uint32_t voltage=0, totalTemp=0;
-//float calVoltage=0;
-//uint8_t counOfsum=0;
-//uint16_t realTemp=0;
-//volatile uint8_t  flagOfTemp=0;
-//
-//void ADC_IRQHandler()
-//{
-//	if(ADC_ChannelGetStatus(LPC_ADC,ADC_CHANNEL_1,ADC_DATA_DONE)==0)
-//		{
-//			uint16_t temp=0;
-//		  voltage = ADC_ChannelGetData(LPC_ADC,ADC_CHANNEL_1);
-//		  /*
-//		  	3.2volt    4096 digit
-//		  	x          voltage 
-//		  	x=(3.2*voltage)/4096
-//        */			
-//		  calVoltage = ( voltage * 3.2F ) / 4096;
-//		  //temp = (calVoltage*1000 /10);
-//		  temp = calVoltage*100;
-//			totalTemp += temp;
-//			counOfsum++;
-//			if(counOfsum==20)
-//			{
-//				flagOfTemp=1;
-//				realTemp=totalTemp/counOfsum;
-//				totalTemp=0;
-//				counOfsum=0;
-//			}
-//			else ADC_StartCmd(LPC_ADC,ADC_START_NOW);
-//		}
-//    
-//}
-//
-/*uint16_t HW_ADC_Read()
+void ADC_IRQHandler(void);
+
+uint32_t voltage=0, totalTemp=0;
+float calVoltage=0;
+uint8_t counOfsum=0, flagOfTemp=0;
+uint16_t realTemp=0, temp=0;
+
+void ADC_IRQHandler()
+{
+	if(ADC_ChannelGetStatus(LPC_ADC,ADC_CHANNEL_1,ADC_DATA_DONE)==0)
+		{
+		  voltage = ADC_ChannelGetData(LPC_ADC,ADC_CHANNEL_1);
+		  /* 
+		  	3.2volt    4096 digit
+		  	x          voltage 
+		  	x=(3.2*voltage)/4096
+      */			
+		  calVoltage = ( voltage * 3.2F ) / 4096;
+		  //temp = (calVoltage*1000 /10);
+		  temp = calVoltage*100;
+			totalTemp += temp;
+			counOfsum++;
+			if(counOfsum==20)
+			{
+				flagOfTemp=1;
+				realTemp=totalTemp/counOfsum;
+				totalTemp=0;
+				counOfsum=0;
+			}
+			else ADC_StartCmd(LPC_ADC,ADC_START_NOW);
+		}
+    
+}
+
+
+uint16_t HW_ADC_Read()
 {
 	flagOfTemp=0;
 	ADC_StartCmd(LPC_ADC,ADC_START_NOW);
 	while(flagOfTemp==0);
 	return realTemp;
 }
-*/
+
+
 void HW_Init()
 {
 	// pinsel difenation for TXD2, port0.10
@@ -78,8 +77,6 @@ void HW_Init()
 	UART_Init(LPC_UART2,&UartInint);
 	UART_TxCmd(LPC_UART2,ENABLE);
 	
-	/* NVIC_SetPriorityGrouping(0x07);
-
 	// pinsel difenation for adc, port0.24
 	PINSEL_CFG_Type adcpin;
 	adcpin.Funcnum = PINSEL_FUNC_1;
@@ -93,11 +90,10 @@ void HW_Init()
 	ADC_Init(LPC_ADC,200000);
 	ADC_IntConfig(LPC_ADC,ADC_ADINTEN1,ENABLE);
 	ADC_ChannelCmd(LPC_ADC,ADC_CHANNEL_1, ENABLE);
-  */
-	
-	/*
+  
+	// ADC Interrupt Enable and set priority 
+	NVIC_SetPriorityGrouping(0x07);
 	NVIC_SetPriority(ADC_IRQn,NVIC_EncodePriority(0x07,0,1));
 	NVIC_EnableIRQ(ADC_IRQn);
-	*/
 }
 
