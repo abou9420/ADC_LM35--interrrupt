@@ -25,7 +25,7 @@ int main()
 {
 	// variable 
 	char	temper[5];
-	uint8_t localTemp=0;
+	float localTemp=0;
 	uint8_t temper1[20];	
 	
 	HW_Init();
@@ -40,10 +40,10 @@ int main()
 		localTemp= HW_ADC_Read();
 		
 		lcd_gotoxy(2,7);
-		sprintf(temper ,"T=%d",localTemp);
+		sprintf(temper ,"T=%0.1f",localTemp);
 		lcd_putsf(temper);
 		
-		uint8_t len = sprintf(temper1 ,"T=%u\n",localTemp);
+		uint8_t len = sprintf(temper1 ,"T=%0.1f\n",localTemp);
 		// send temp
 		UART_Send(LPC_UART2,temper1,len,BLOCKING);
 		Delay_RIT_ms(1000);
