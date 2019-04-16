@@ -392,6 +392,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\src\lcd.h</FilePath>
             </File>
+            <File>
+              <FileName>Delay_RIT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\Delay_RIT.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -421,6 +426,16 @@
               <FileName>lpc17xx_pinsel.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Drivers\source\lpc17xx_pinsel.c</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Drivers\source\lpc17xx_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_rit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Drivers\source\lpc17xx_rit.c</FilePath>
             </File>
           </Files>
         </Group>

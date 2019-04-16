@@ -12,5 +12,7 @@
 .\objects\main.o: ..\..\Drivers\include\lpc17xx_adc.h
 .\objects\main.o: ..\..\Drivers\include\lpc17xx_pinsel.h
 .\objects\main.o: ..\..\Drivers\include\lpc17xx_nvic.h
+.\objects\main.o: ..\..\Drivers\include\lpc17xx_uart.h
 .\objects\main.o: ..\..\src\lcd.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: ..\..\inc\Delay_RIT.h

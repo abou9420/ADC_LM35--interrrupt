@@ -2,6 +2,7 @@
 #include "lpc17xx_adc.h"
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_nvic.h"
+#include "lpc17xx_uart.h"
 
 /* Char LCD definition */
 #define LCD_LPC1768       
@@ -15,7 +16,8 @@
 #define LCD_DB7    7
 
 #include "lcd.h"
-#include<stdio.h>
+#include <stdio.h>
+#include "Delay_RIT.h"
 // Delay 
 void Delay(uint8_t delay)
 {
@@ -65,10 +67,12 @@ int main()
 {
 	// variable 
 	char	temper[5];
-	float localTemp=0;
-		
+	uint8_t localTemp=0;
+	float localTemp1=0;
+	uint8_t temper1[20];	
 	lcd_init();
 	lcd_clear();
+	
 	// pinsel difenation
 	PINSEL_CFG_Type adcpin;
 	adcpin.Funcnum = PINSEL_FUNC_1;
@@ -83,18 +87,43 @@ int main()
 	
 	// adc prepheral init
 	ADC_Init(LPC_ADC,200000);
-	ADC_IntConfig(LPC_ADC,ADC_ADINTEN0,ENABLE);
+	ADC_IntConfig(LPC_ADC,ADC_ADINTEN1,ENABLE);
 	ADC_ChannelCmd(LPC_ADC,ADC_CHANNEL_1, ENABLE);
   
 	NVIC_SetPriority(ADC_IRQn,NVIC_EncodePriority(0x07,0,1));
 	NVIC_EnableIRQ(ADC_IRQn);
-  //
+  
+	// uart pinsel defination
+	PINSEL_CFG_Type uartCfg;
+	uartCfg.Funcnum= PINSEL_FUNC_1 ;
+	uartCfg.OpenDrain= PINSEL_PINMODE_TRISTATE ;
+	uartCfg.Pinmode=PINSEL_PINMODE_NORMAL;
+	uartCfg.Pinnum= PINSEL_PIN_10;
+	uartCfg.Portnum=0;
+	PINSEL_ConfigPin(&uartCfg); // TXD ON PORT0.10
+  
+  uartCfg.Pinnum= PINSEL_PIN_11;
+  uartCfg.Portnum=0;
+  PINSEL_ConfigPin(&uartCfg); // RXD ON PORT0.11
+	
+	// UART Peripheral init
+	UART_CFG_Type uartInit;
+	uartInit.Baud_rate = 115200;
+	uartInit.Databits  = UART_DATABIT_8;
+	uartInit.Parity    = UART_PARITY_NONE;
+	uartInit.Stopbits  = UART_STOPBIT_1;
+	
+	UART_Init(LPC_UART2,&uartInit);
+	
+	UART_TxCmd(LPC_UART2,ENABLE);
+	//
 	lcd_gotoxy(1,4);
 	lcd_putsf("Temperatuer");
 	ADC_StartCmd(LPC_ADC,ADC_START_NOW);
 		
 	while(1)
 	{
+		Delay(10);
 		if(flagOfTemp==1)
 		{
 			flagOfTemp=0;
@@ -102,10 +131,22 @@ int main()
 		}
 			
 		lcd_gotoxy(2,7);
-		sprintf(temper ,"T=%0.1f",localTemp);
+		sprintf(temper ,"T=%d",localTemp);
 		lcd_putsf(temper);
-			
 		
+		uint8_t len = sprintf(temper1 ,"T=%u\n",localTemp);
+		// send temp
+		UART_Send(LPC_UART2,temper1,len,BLOCKING);
+		//Delay_RIT_ms(0);
+		Delay(100);
+		
+		/*uint16_t local=localTemp;
+		UART_SendByte(LPC_UART2,(local>>8));
+		//Delay_RIT_ms(10);
+		Delay(10);
+		while(UART_CheckBusy(LPC_UART2));
+		UART_SendByte(LPC_UART2,localTemp);
+	*/
 	}
 	
 }
