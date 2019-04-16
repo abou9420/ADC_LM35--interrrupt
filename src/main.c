@@ -18,16 +18,7 @@
 #include "lcd.h"
 #include <stdio.h>
 #include "Delay_RIT.h"
-// Delay 
-void Delay(uint8_t delay)
-{
-	for(uint16_t i=0;i< UINT16_MAX;i++)
-	{
-		for(uint8_t j=0;j<delay;j++)
-		{
-		}
-	}
-}
+#include "HardwareInit.h"
 
 void ADC_IRQHandler(void);
 
@@ -68,7 +59,6 @@ int main()
 	// variable 
 	char	temper[5];
 	uint8_t localTemp=0;
-	float localTemp1=0;
 	uint8_t temper1[20];	
 	lcd_init();
 	lcd_clear();
@@ -92,38 +82,15 @@ int main()
   
 	NVIC_SetPriority(ADC_IRQn,NVIC_EncodePriority(0x07,0,1));
 	NVIC_EnableIRQ(ADC_IRQn);
-  
-	// uart pinsel defination
-	PINSEL_CFG_Type uartCfg;
-	uartCfg.Funcnum= PINSEL_FUNC_1 ;
-	uartCfg.OpenDrain= PINSEL_PINMODE_TRISTATE ;
-	uartCfg.Pinmode=PINSEL_PINMODE_NORMAL;
-	uartCfg.Pinnum= PINSEL_PIN_10;
-	uartCfg.Portnum=0;
-	PINSEL_ConfigPin(&uartCfg); // TXD ON PORT0.10
-  
-  uartCfg.Pinnum= PINSEL_PIN_11;
-  uartCfg.Portnum=0;
-  PINSEL_ConfigPin(&uartCfg); // RXD ON PORT0.11
-	
-	// UART Peripheral init
-	UART_CFG_Type uartInit;
-	uartInit.Baud_rate = 115200;
-	uartInit.Databits  = UART_DATABIT_8;
-	uartInit.Parity    = UART_PARITY_NONE;
-	uartInit.Stopbits  = UART_STOPBIT_1;
-	
-	UART_Init(LPC_UART2,&uartInit);
-	
-	UART_TxCmd(LPC_UART2,ENABLE);
+  HW_Init();
 	//
 	lcd_gotoxy(1,4);
 	lcd_putsf("Temperatuer");
 	ADC_StartCmd(LPC_ADC,ADC_START_NOW);
-		
+	
+  Delay_RIT_Init();	
 	while(1)
 	{
-		Delay(10);
 		if(flagOfTemp==1)
 		{
 			flagOfTemp=0;
@@ -137,16 +104,14 @@ int main()
 		uint8_t len = sprintf(temper1 ,"T=%u\n",localTemp);
 		// send temp
 		UART_Send(LPC_UART2,temper1,len,BLOCKING);
-		//Delay_RIT_ms(0);
-		Delay(100);
+		Delay_RIT_ms(1000);
 		
 		/*uint16_t local=localTemp;
 		UART_SendByte(LPC_UART2,(local>>8));
-		//Delay_RIT_ms(10);
-		Delay(10);
+		Delay_RIT_ms(10);
 		while(UART_CheckBusy(LPC_UART2));
 		UART_SendByte(LPC_UART2,localTemp);
-	*/
+	  */
 	}
 	
 }

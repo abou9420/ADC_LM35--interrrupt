@@ -397,6 +397,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\src\Delay_RIT.c</FilePath>
             </File>
+            <File>
+              <FileName>HardwareInit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\HardwareInit.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

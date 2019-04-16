@@ -1,6 +1,7 @@
 --cpu Cortex-M3
 ".\objects\main.o"
 ".\objects\delay_rit.o"
+".\objects\hardwareinit.o"
 ".\objects\lpc17xx_clkpwr.o"
 ".\objects\lpc17xx_gpio.o"
 ".\objects\lpc17xx_adc.o"

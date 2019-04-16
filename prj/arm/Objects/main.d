@@ -16,3 +16,4 @@
 .\objects\main.o: ..\..\src\lcd.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\main.o: ..\..\inc\Delay_RIT.h
+.\objects\main.o: ..\..\inc\HardwareInit.h
