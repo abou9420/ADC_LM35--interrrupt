@@ -402,6 +402,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\src\HardwareInit.c</FilePath>
             </File>
+            <File>
+              <FileName>Uart_IRQ_Util.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\src\Uart_IRQ_Util.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

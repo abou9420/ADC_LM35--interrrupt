@@ -19,8 +19,19 @@
 #include <stdio.h>
 #include "Delay_RIT.h"
 #include "HardwareInit.h"
-
-
+volatile uint8_t IntFlag=0;
+void UART_IntReceive(void)
+{
+	char	temper2[5];
+	uint8_t data = UART_ReceiveByte(LPC_UART2);
+	lcd_clear();
+	lcd_gotoxy(1,1);
+	lcd_putsf("Aboubakr Samadi");
+	lcd_gotoxy(2,7);
+	sprintf(temper2 ,"%d",data);
+	lcd_putsf(temper2);
+	IntFlag=1;
+}
 int main()
 {
 	// variable 
@@ -41,7 +52,7 @@ int main()
 	
 	while(1)
 	{
-		localTemp= HW_ADC_Read();
+		localTemp = HW_ADC_Read();
 		
 		// lcd_gotoxy(2,7);
 		// sprintf(temper ,"T=%0.1f",localTemp);
@@ -51,6 +62,20 @@ int main()
 		uint8_t len = sprintf(temper1 ,"T=%0.1f\n",localTemp);
 		UART_Send(LPC_UART2,temper1,len,BLOCKING);
 		Delay_RIT_ms(1000);
+		if(IntFlag==1)
+		{
+			for( uint8_t i=0;i<10;i++)
+			{
+			Delay_RIT_ms(1000);
+			}
+			IntFlag=0;
+		}
+		lcd_clear();
+		lcd_gotoxy(1,4);
+	  lcd_putsf("Temperatuer");
+		lcd_gotoxy(2,7);
+		sprintf(temper ,"T=%0.1f",localTemp);
+		lcd_putsf(temper);
 		
 		/*uint16_t local=localTemp;
 		UART_SendByte(LPC_UART2,(local>>8));
@@ -74,8 +99,8 @@ int main()
 			/* | 0xAA |  1    |0xbb| show tempreture on LCD */
       /* | 0xAA |  1    |0xbb| clear tempreture on LCD */			
 			/*-----------------------*/
-		// Reseive Data Array mode
-		
+		 // Reseive Data Array mode
+		/*
     UART_Receive(LPC_UART2,dataPrt,3,BLOCKING);
     
 		if( dataPrt[0]==0xAA && dataPrt[1]==1 && dataPrt[2]==0xbb)
@@ -95,8 +120,10 @@ int main()
 			lcd_gotoxy(2,1);
 		  lcd_putsf("Aboubakr Samadi");
 			
-		}
+		}*/
+		
 		
 	}
+	 // Reseive Data Inerrupt Array mode
 	
 }

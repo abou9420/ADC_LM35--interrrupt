@@ -95,5 +95,11 @@ void HW_Init()
 	NVIC_SetPriorityGrouping(0x07);
 	NVIC_SetPriority(ADC_IRQn,NVIC_EncodePriority(0x07,0,1));
 	NVIC_EnableIRQ(ADC_IRQn);
+	
+	// UART Inerrupt Init 
+	UART_IntConfig(LPC_UART2,UART_INTCFG_RBR,ENABLE);
+	NVIC_EnableIRQ(UART2_IRQn);
+	
+	
 }
 
